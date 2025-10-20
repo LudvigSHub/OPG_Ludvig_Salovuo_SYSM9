@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:CookMaster"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+    <ContentControl 
+        Name="ShellContent"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Margin="0,0,0,0" Content="Shell Ready"/>
 </Window>
