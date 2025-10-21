@@ -9,7 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <None Remove="Resources\ChatGPT Image Oct 21, 2025, 09_15_48 AM.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\ChatGPT Image Oct 21, 2025, 09_15_48 AM.png" />
   </ItemGroup>
 
 </Project>
