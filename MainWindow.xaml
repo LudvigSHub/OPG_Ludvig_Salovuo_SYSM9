@@ -11,25 +11,57 @@
             <ImageBrush x:Name="BackGroundImage" ImageSource="/Resources/ChatGPT Image Oct 21, 2025, 09_15_48 AM.png"/>
         </Grid.Background>
 
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+        <Border Width="360" Padding="16"
+            Background="#66000000" CornerRadius="8"
+            HorizontalAlignment="Left" VerticalAlignment="Bottom"
+            Margin="80,0,0,80">
+            <!-- Själva formuläret -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        </Grid.ColumnDefinitions>
-        <Button Grid.Row="2" Grid.Column="0"
-                Content="Log in" Height="50" Width="150" FontSize="16"/>
-        <TextBox x:Name="PasswordInput" Grid.Row="2" Grid.Column="0" Height="30" Width="150" Margin="175,44,175,144"/>
-        <TextBox x:Name="UserNameInput" Grid.Row="2" Grid.Column="0" Height="30" Width="150" Margin="175,10,175,184" />
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Username:" Height="30" Width="150" FontSize="14" Margin="99,20,310,185" Foreground="White"/>
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Password:" FontSize="14" Margin="99,56,310,144" Foreground="White"/>
-        <Button Grid.Row="2" Grid.Column="1"
-        Content="Register" Height="50" Width="150" FontSize="16"/>
+                <!-- Username -->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Username:"
+                       VerticalAlignment="Center" Margin="0,0,12,0" Foreground="White"/>
+                <TextBox  Grid.Row="0" Grid.Column="1" Width="220" MinWidth="220" Height="28"
+                      Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
+                <!-- Password -->
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Password:"
+                       VerticalAlignment="Center" Margin="0,0,12,0" Foreground="White"/>
+                <PasswordBox x:Name="Pwd" Grid.Row="2" Grid.Column="1" Width="220" MinWidth="220" Height="28"
+                         PasswordChanged="Pwd_PasswordChanged"/>
+
+                <!-- Meddelande -->
+                <TextBlock Grid.Row="4" Grid.ColumnSpan="2" Foreground="LightGray"
+                       Text="{Binding Message}"/>
+
+                <!-- Knappar -->
+                <Grid Grid.Row="6" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Content="Log in" Width="100" Height="36"
+                        Command="{Binding LoginCommand}" IsEnabled="{Binding CanLogin}"/>
+                    <Button Grid.Column="2" Content="Register" Width="100" Height="36"
+                        Command="{Binding RegisterCommand}"/>
+                </Grid>
+            </Grid>
+        </Border>
 
 
 

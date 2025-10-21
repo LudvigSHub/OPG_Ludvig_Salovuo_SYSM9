@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using CookMaster.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,12 @@ namespace CookMaster
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Pwd_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MainViewModel vm && sender is PasswordBox pb)
+                vm.Password = pb.Password;
         }
     }
 }
