@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CookMaster.Infrastructure;
+using CookMaster.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,11 +19,13 @@ namespace CookMaster.Views
     /// <summary>
     /// Interaction logic for RecipeListView.xaml
     /// </summary>
-    public partial class RecipeListView : UserControl
+    public partial class RecipeListView : Window
     {
         public RecipeListView()
         {
             InitializeComponent();
         }
+
+        
     }
 }
