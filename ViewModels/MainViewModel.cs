@@ -63,6 +63,9 @@ namespace CookMaster.ViewModels
             set { _message = value; OnPropertyChanged(); }
         }
 
+        // Metod som körs när användaren försöker logga in.
+        // Kollar med UserManager ifall inloggningen lyckas.
+        // Om ja: navigera till RecipeListView.
         private void Login()
         {
             if (_users.Login(Username, Password))

@@ -23,7 +23,8 @@ namespace CookMaster.Infrastructure
         // stänger det gamla fönstret
         public void NavigateTo<TWindow>(object viewModel) where TWindow : Window, new()
         {
-            // skapa nytt fönster och sätt DataContext
+            // skapa nytt fönster och sätt DataContext till viewModel
+            
             var newWindow = new TWindow { DataContext = viewModel };
             newWindow.Show();
 

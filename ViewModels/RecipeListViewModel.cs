@@ -20,5 +20,7 @@ namespace CookMaster.ViewModels
             
             _nav = nav;
         }
+
+        
     }
 }
