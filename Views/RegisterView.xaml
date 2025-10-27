@@ -5,8 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CookMaster.Views"
         mc:Ignorable="d"
-        Title="RegisterView" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="RegisterView" Height="300" Width="360">
+    <Border Padding="16">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Username label -->
+                <RowDefinition Height="Auto"/>
+                <!-- Username box -->
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="Auto"/>
+                <!-- Password label -->
+                <RowDefinition Height="Auto"/>
+                <!-- Password box -->
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="Auto"/>
+                <!-- Country label -->
+                <RowDefinition Height="Auto"/>
+                <!-- Country combo -->
+                <RowDefinition Height="16"/>
+                <RowDefinition Height="Auto"/>
+                <!-- Button -->
+            </Grid.RowDefinitions>
+
+            <!-- Username -->
+            <TextBlock Grid.Row="0" Text="Username" Margin="0,0,0,4"/>
+            <TextBox   Grid.Row="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                       Width="220" Height="28"/>
+
+            <!-- Password (enkelt: TextBox enligt din nivå) -->
+            <TextBlock Grid.Row="3" Text="Password" Margin="0,0,0,4"/>
+            <TextBox   Grid.Row="4" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                       Width="220" Height="28"/>
+
+            <!-- Country -->
+            <TextBlock Grid.Row="6" Text="Country" Margin="0,0,0,4"/>
+            <ComboBox  Grid.Row="7"
+                       ItemsSource="{Binding Countries}"
+                       SelectedItem="{Binding SelectedCountry}"
+                       Width="220" Height="28"/>
+
+            <!-- Register -->
+            <Button Grid.Row="9" Content="Register"
+                    Command="{Binding RegisterCommand}"
+                    Width="110" Height="32" HorizontalAlignment="Right"/>
+        </Grid>
+    </Border>
 </Window>

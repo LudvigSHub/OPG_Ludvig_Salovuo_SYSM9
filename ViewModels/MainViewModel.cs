@@ -23,6 +23,7 @@ namespace CookMaster.ViewModels
         {
             _users = users;
             LoginCommand = new RelayCommand(_ => Login(), _ => CanLogin);
+            RegisterCommand = new RelayCommand(_ => OpenRegister());
             _nav = nav;
         }
 
@@ -66,11 +67,12 @@ namespace CookMaster.ViewModels
             set { _message = value; OnPropertyChanged(); }
         }
 
-        
 
-        private void Register()
+
+        private void OpenRegister()
         {
-
+            var vm = new RegisterViewModel(_users, _nav);
+            _nav.NavigateTo<RegisterView>(vm);
         }
 
         // Metod som körs när användaren försöker logga in.

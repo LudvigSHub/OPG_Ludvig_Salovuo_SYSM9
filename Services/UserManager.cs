@@ -33,8 +33,8 @@ namespace CookMaster.Services
         public UserManager()
         {
             // seed så du kan testa direkt
-            _users.Add(new User { Username = "admin", Password = "1234", Country = "SE" });
-            _users.Add(new User { Username = "user", Password = "1234", Country = "SE" });
+            _users.Add(new User { Username = "admin", Password = "1234", Country = "Sweden" });
+            _users.Add(new User { Username = "user", Password = "1234", Country = "Sweden" });
         }
 
         public bool Login(string username, string password)
