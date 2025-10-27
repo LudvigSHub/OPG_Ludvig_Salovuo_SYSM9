@@ -22,9 +22,14 @@ namespace CookMaster
             InitializeComponent();
         }
 
+        //Metoden triggas varje gång användaren skriver i PasswordBox (eventet PasswordChanged)
+        //
         private void Pwd_PasswordChanged(object sender, RoutedEventArgs e)
         {
+            //DataContext is MainViewModel vm → hämtar din ViewModel
+            //sender is PasswordBox pb → hämtar PasswordBox som utlöste eventet
             if (DataContext is MainViewModel vm && sender is PasswordBox pb)
+                //vm.Password = pb.Password; → sätter ViewModel-egenskapen till det som finns i PasswordBox
                 vm.Password = pb.Password;
         }
     }

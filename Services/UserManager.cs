@@ -50,14 +50,23 @@ namespace CookMaster.Services
 
         public void Logout() => CurrentUser = null;
 
+        // Metod för att registrera en ny användare.
         public bool Register(User newUser)
         {
+            // Enkel validering: kolla att användarnamn och lösenord inte är tomma
+            //newUser?.Username/Password kan vara null, därför används null-conditional operator (?.)
+            // och IsNullOrWhiteSpace kollar både för null och tomma strängar
             if (string.IsNullOrWhiteSpace(newUser?.Username) || string.IsNullOrWhiteSpace(newUser?.Password))
                 return false;
 
+            // Kolla att användarnamnet inte redan finns (case-insensitive)
+            // Använder StringComparison.OrdinalIgnoreCase för att ignorera skillnad mellan stora och små bokstäver
+            // exempel: "User" och "user" betraktas som samma användarnamn
+            // Linq-metoden Any returnerar true om någon användare matchar villkoret
             if (_users.Any(x => x.Username.Equals(newUser.Username, StringComparison.OrdinalIgnoreCase)))
                 return false;
 
+            // Lägg till den nya användaren i listan
             _users.Add(newUser);
             return true;
         }

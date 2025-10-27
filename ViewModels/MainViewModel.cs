@@ -56,11 +56,21 @@ namespace CookMaster.ViewModels
         // Själva kommandot som din Login-knapp binder till: Command="{Binding LoginCommand}"
         public ICommand LoginCommand { get; }
 
+        public ICommand RegisterCommand { get; }
+
+
         private string _message = string.Empty;
         public string Message
         {
             get => _message;
             set { _message = value; OnPropertyChanged(); }
+        }
+
+        
+
+        private void Register()
+        {
+
         }
 
         // Metod som körs när användaren försöker logga in.
