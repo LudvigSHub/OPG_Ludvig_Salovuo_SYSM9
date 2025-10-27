@@ -1,11 +1,14 @@
 ﻿using CookMaster.Infrastructure;
+using CookMaster.Models;
 using CookMaster.Services;
+using CookMaster.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace CookMaster.ViewModels
@@ -20,13 +23,22 @@ namespace CookMaster.ViewModels
 
         public List<string> Countries { get; } = new() 
         { "Sweden", "Norway", "Finland", "Denmark" };
-        public string SelectedCountry { get; set; }
+        
+        private string? _selectedCountry;
+
+        public string SelectedCountry 
+        { 
+            get => _selectedCountry;
+            set { _selectedCountry = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanRegister)); }
+        }
 
         public ICommand RegisterCommand { get; }
 
         public RegisterViewModel(UserManager users, NavigationService nav)
         {
             _users = users;
+            // RegisterCommand kopplat till Register-metoden och CanRegister-propertyn
+            // 
             RegisterCommand = new RelayCommand(_ => Register(),_ => CanRegister);
             _nav = nav;
         }
@@ -50,6 +62,10 @@ namespace CookMaster.ViewModels
             get => _password;
             set { _password = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanRegister)); }
         }
+
+        // Bool CanRegister som ser till att alla fälten är ifyllda innan registrering tillåts.
+        // returnerar true endast om Username, Password och SelectedCountry inte är null eller tomma.
+        // bindat med isEnabled på registreringsknappen i XAML.
         public bool CanRegister =>
           !string.IsNullOrWhiteSpace(Username) &&
           !string.IsNullOrWhiteSpace(Password) &&
@@ -57,7 +73,25 @@ namespace CookMaster.ViewModels
 
         private void Register()
         {
-            throw new NotImplementedException();
+            var user = new User 
+            { 
+                Username = this.Username, 
+                Password = this.Password, 
+                Country = this.SelectedCountry! 
+            };
+            
+            if (!_users.Register(user, out string error))
+            {
+                MessageBox.Show(error, "Registration Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            MessageBox.Show("Registration Successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            var recipeVm = new MainViewModel(_users, _nav);
+            _nav.NavigateTo<MainWindow>(recipeVm);
+
+
         }
     }
 }

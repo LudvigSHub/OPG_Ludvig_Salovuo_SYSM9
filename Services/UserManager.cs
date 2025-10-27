@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CookMaster.Services
 {
@@ -51,20 +52,49 @@ namespace CookMaster.Services
         public void Logout() => CurrentUser = null;
 
         // Metod för att registrera en ny användare.
-        public bool Register(User newUser)
+        public bool Register(User newUser, out string error)
         {
-            // Enkel validering: kolla att användarnamn och lösenord inte är tomma
-            //newUser?.Username/Password kan vara null, därför används null-conditional operator (?.)
-            // och IsNullOrWhiteSpace kollar både för null och tomma strängar
-            if (string.IsNullOrWhiteSpace(newUser?.Username) || string.IsNullOrWhiteSpace(newUser?.Password))
+            // flera if satser för att validera lösenordet
+            // ger olika felmeddelanden beroende på vad som saknas
+
+            // Kontrollera att newUser inte är null
+            if (string.IsNullOrWhiteSpace(newUser.Password))
+            {
+                error = "Password is required.";
                 return false;
+            }
+            error = string.Empty;
+
+            // Lösenordskrav: minst 8 tecken
+            if (newUser?.Password.Length < 8)
+            {
+                error = "Password has to be atleast 8 characters!";
+                return false;
+            }
+
+            // Lösenordskrav: minst en stor bokstav
+            if (!newUser.Password.Any(char.IsDigit))
+            {
+                error = "Password must contain at least one number.";
+                return false;
+            }
+
+            // Lösenordskrav: måste innehålla ett specialtecken
+            string specialChars = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
+            if (!newUser.Password.Any(specialChars.Contains))
+            {
+                error = "Password must contain at least one special character.";
+                return false;
+            }
 
             // Kolla att användarnamnet inte redan finns (case-insensitive)
             // Använder StringComparison.OrdinalIgnoreCase för att ignorera skillnad mellan stora och små bokstäver
             // exempel: "User" och "user" betraktas som samma användarnamn
             // Linq-metoden Any returnerar true om någon användare matchar villkoret
-            if (_users.Any(x => x.Username.Equals(newUser.Username, StringComparison.OrdinalIgnoreCase)))
-                return false;
+            if (_users.Any(x => x.Username.Equals(newUser.Username, StringComparison.OrdinalIgnoreCase))) { 
+                error = "Username already exists.";
+            return false;
+            }
 
             // Lägg till den nya användaren i listan
             _users.Add(newUser);
@@ -75,3 +105,6 @@ namespace CookMaster.Services
             _users.FirstOrDefault(x => x.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
     }
 }
+
+
+
