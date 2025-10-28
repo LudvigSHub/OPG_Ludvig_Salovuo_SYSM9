@@ -2,6 +2,7 @@
 using CookMaster.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,8 @@ namespace CookMaster.Services
 {
     public class UserManager : ObservableObject
     {
-        private readonly List<User> _users = new();
-
-        public IReadOnlyList<User> Users => _users;
+        private readonly ObservableCollection<User> _users = new();
+        public ReadOnlyObservableCollection<User> Users { get; }
 
         private User? _currentUser;
         public User? CurrentUser
@@ -33,7 +33,8 @@ namespace CookMaster.Services
 
         public UserManager()
         {
-            // seed så du kan testa direkt
+            Users = new ReadOnlyObservableCollection<User>(_users);
+
             _users.Add(new User { Username = "admin", Password = "1234", Country = "Sweden" });
             _users.Add(new User { Username = "user", Password = "1234", Country = "Sweden" });
         }
@@ -54,6 +55,8 @@ namespace CookMaster.Services
         // Metod för att registrera en ny användare.
         public bool Register(User newUser, out string error)
         {
+
+            error = string.Empty;
             // flera if satser för att validera lösenordet
             // ger olika felmeddelanden beroende på vad som saknas
 
@@ -63,7 +66,7 @@ namespace CookMaster.Services
                 error = "Password is required.";
                 return false;
             }
-            error = string.Empty;
+            
 
             // Lösenordskrav: minst 8 tecken
             if (newUser?.Password.Length < 8)

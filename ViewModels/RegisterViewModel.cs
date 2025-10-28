@@ -46,7 +46,7 @@ namespace CookMaster.ViewModels
 
         // Property som din TextBox för användarnamn binder till.
         // På set: meddela UI att Username ändrats OCH att CanLogin kan ha ändrats,
-        // så att t.ex. en "Logga in"-knapp kan aktiveras/inaktiveras direkt.
+        // så att t.ex. en "Register"-knapp kan aktiveras/inaktiveras direkt.
         public string Username
         {
             get => _username;
