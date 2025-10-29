@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 
 namespace CookMaster.ViewModels
 {
-    internal class RecipeListViewModel : ObservableObject
+    public class RecipeListViewModel : ObservableObject
     {
         private readonly UserManager _users;
+
+        public UserManager Users => _users;
 
         private readonly NavigationService _nav;
 

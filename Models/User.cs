@@ -11,5 +11,7 @@ namespace CookMaster.Models
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
+
+        public List<Recipe> RecipeList { get; set; } = new List<Recipe>();
     }
 }
