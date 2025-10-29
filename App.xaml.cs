@@ -1,6 +1,7 @@
-﻿using CookMaster.Services;
+﻿using CookMaster.Infrastructure;
+using CookMaster.Models;
+using CookMaster.Services;
 using CookMaster.ViewModels;
-using CookMaster.Infrastructure;
 using System.Configuration;
 using System.Data;
 using System.Windows;
@@ -24,9 +25,14 @@ namespace CookMaster
             // Skapa UserManager som hanterar användare och inloggning
             var userManager = new UserManager();
 
-           
+            // Skapa RecipeManager som hanterar recept
+            var recipeMgr = new RecipeManager(userManager);
+
+
+
+
             // 
-            var mainVm = new MainViewModel (userManager, navigation);
+            var mainVm = new MainViewModel (userManager, navigation, recipeMgr);
 
             
             var window = new MainWindow { DataContext = mainVm };

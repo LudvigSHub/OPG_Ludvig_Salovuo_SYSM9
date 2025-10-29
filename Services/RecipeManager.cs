@@ -11,35 +11,73 @@ namespace CookMaster.Services
 {
     public class RecipeManager : ObservableObject
     {
+        private readonly UserManager _users;
+
         private readonly ObservableCollection<Recipe> _recipes = new();
         public ReadOnlyObservableCollection<Recipe> Recipes { get; }
 
-        public RecipeManager()
+        public RecipeManager(UserManager users)
         {
+            _users = users;
             Recipes = new ReadOnlyObservableCollection<Recipe>(_recipes);
+        }
 
-            _recipes.Add(new Recipe
+        // 1) Seeda efter login (endast om user saknar recept)
+        public void SeedForCurrentUser()
+        {
+            var u = _users.CurrentUser;
+            if (u is null || u.RecipeList.Count > 0) return;
+
+            var r1 = new Recipe
             {
-                
                 Title = "Spaghetti Bolognese",
-                Ingredients = new List<string> { "Spaghetti", "Ground beef", "Tomato sauce", "Onion", "Garlic", "Olive oil", "Salt", "Pepper" },
-                Instructions = "1. Cook spaghetti according to package instructions.\n2. In a pan, heat olive oil and sauté onion and garlic until translucent.\n3. Add ground beef and cook until browned.\n4. Pour in tomato sauce and simmer for 15 minutes.\n5. Season with salt and pepper to taste.\n6. Serve sauce over spaghetti.",
                 Category = RecipeCategory.MainCourse,
-                OwnerUsername = "user"
+                CreatedUtc = DateTime.UtcNow,
+                OwnerUsername = u.Username
+            };
+            var r2 = new Recipe
+            {
+                Title = "Risotto",
+                Category = RecipeCategory.MainCourse,
+                CreatedUtc = DateTime.UtcNow,
+                OwnerUsername = u.Username
+            };
 
-            });
-            // UserManager.CurrentUser.RecipeList = Recipes
+            _recipes.Add(r1); _recipes.Add(r2);    // central källa
+            u.RecipeList.Add(r1); u.RecipeList.Add(r2); // min-vy för current user
         }
 
-        public void AddRecipe(Recipe recipe)
+        // 2) Synka user-listan från centrala källan (kan kallas vid login/byte user)
+        public void SyncUserList()
         {
-            if (recipe == null) return;
+            var u = _users.CurrentUser;
+            if (u is null) return;
+
+            var mine = _recipes
+                .Where(r => r.OwnerUsername.Equals(u.Username, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (mine.Count == 0) return; // <-- behåll befintlig lista om centrala källan saknar poster
+
+            u.RecipeList.Clear();
+            foreach (var r in mine)
+                u.RecipeList.Add(r);
+        }
+
+        // 3) Lägg för current user (uppdatera båda samlingar)
+        public void AddForCurrentUser(Recipe recipe)
+        {
+            var u = _users.CurrentUser ?? throw new InvalidOperationException("No user");
+            recipe.OwnerUsername = u.Username;
             _recipes.Add(recipe);
+            u.RecipeList.Add(recipe);
         }
 
-        public bool RemoveRecipe(Recipe recipe)
+        // 4) Ta bort (uppdatera båda)
+        public bool Remove(Recipe recipe)
         {
-            if (recipe == null) return false;
+            if (recipe is null) return false;
+            _users.CurrentUser?.RecipeList.Remove(recipe);
             return _recipes.Remove(recipe);
         }
     }

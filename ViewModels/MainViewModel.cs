@@ -1,4 +1,5 @@
 ﻿using CookMaster.Infrastructure;
+using CookMaster.Models;
 using CookMaster.Services;
 using CookMaster.Views;
 using System;
@@ -15,16 +16,18 @@ namespace CookMaster.ViewModels
         private readonly UserManager _users;
 
         private readonly NavigationService _nav;
+        private readonly RecipeManager _recipes;
 
         // Konstruktorn får in UserManager via dependency injection.
         // Skapar även LoginCommand: kopplar "vad som händer" (Login)
         // och "om det är tillåtet" (CanLogin) för t.ex. en Button i XAML.
-        public MainViewModel(UserManager users, NavigationService nav)
+        public MainViewModel(UserManager users, NavigationService nav, RecipeManager recipes)
         {
             _users = users;
             LoginCommand = new RelayCommand(_ => Login(), _ => CanLogin);
             RegisterCommand = new RelayCommand(_ => OpenRegister());
             _nav = nav;
+            _recipes = recipes;
         }
 
         // --- enkel login-skelett ---
@@ -71,7 +74,7 @@ namespace CookMaster.ViewModels
 
         private void OpenRegister()
         {
-            var vm = new RegisterViewModel(_users, _nav);
+            var vm = new RegisterViewModel(_users, _nav, _recipes);
             _nav.NavigateTo<RegisterView>(vm);
         }
 
@@ -84,6 +87,8 @@ namespace CookMaster.ViewModels
             {
                 Message = "Login OK";
 
+                _recipes.SeedForCurrentUser();   // skapa default för denna user (en gång)
+                _recipes.SyncUserList();         // fyll MyRecipes (CurrentUser.RecipeList)
                 var recipeVm = new RecipeListViewModel(_users, _nav);     
                 _nav.NavigateTo<RecipeListView>(recipeVm);
 

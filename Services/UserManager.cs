@@ -24,7 +24,7 @@ namespace CookMaster.Services
             {
                 if (_currentUser == value) return;
                 _currentUser = value;
-                OnPropertyChanged();                    // CurrentUser
+                OnPropertyChanged();                    
                 OnPropertyChanged(nameof(IsAuthenticated));
             }
         }

@@ -17,9 +17,9 @@ namespace CookMaster.ViewModels
     {
         private readonly UserManager _users;
 
-        
-
         private readonly NavigationService _nav;
+
+        private readonly RecipeManager _recipes;
 
         public List<string> Countries { get; } = new() 
         { "Sweden", "Norway", "Finland", "Denmark" };
@@ -34,13 +34,15 @@ namespace CookMaster.ViewModels
 
         public ICommand RegisterCommand { get; }
 
-        public RegisterViewModel(UserManager users, NavigationService nav)
+        public RegisterViewModel(UserManager users, NavigationService nav, RecipeManager recipes)
         {
             _users = users;
             // RegisterCommand kopplat till Register-metoden och CanRegister-propertyn
             // 
             RegisterCommand = new RelayCommand(_ => Register(),_ => CanRegister);
             _nav = nav;
+
+            _recipes = recipes;
         }
         private string _username = string.Empty;
 
@@ -88,8 +90,8 @@ namespace CookMaster.ViewModels
 
             MessageBox.Show("Registration Successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            var recipeVm = new MainViewModel(_users, _nav);
-            _nav.NavigateTo<MainWindow>(recipeVm);
+            var MainVm = new MainViewModel(_users, _nav, _recipes);
+            _nav.NavigateTo<MainWindow>(MainVm);
 
 
         }

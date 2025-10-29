@@ -12,7 +12,7 @@ namespace CookMaster.Models
         public List<string> Ingredients { get; set; } = new List<string>();
         public string Instructions { get; set; } = string.Empty;
         public RecipeCategory Category { get; set; } = RecipeCategory.Other;
-        public DateTime CreatedAt { get; private set; }
+        public DateTime CreatedUtc { get; init; } = DateTime.UtcNow;
 
         public string OwnerUsername { get; set; } = string.Empty;
 
