@@ -8,5 +8,6 @@ namespace CookMaster.Models
 {
     internal class Recipe
     {
+
     }
 }
