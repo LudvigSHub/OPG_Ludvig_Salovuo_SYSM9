@@ -5,9 +5,11 @@ using CookMaster.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace CookMaster.ViewModels
@@ -20,12 +22,9 @@ namespace CookMaster.ViewModels
 
         private readonly NavigationService _nav;
 
-        private ObservableCollection<Recipe>? _myRecipes;
-        public ObservableCollection<Recipe>? MyRecipes
-        {
-            get => _myRecipes;
-            private set { _myRecipes = value; OnPropertyChanged(); }
-        }
+        public RecipeManager _recipes;
+
+        public ICollectionView RecipesView { get; }
 
         private Recipe? _selectedRecipe;
         public Recipe? SelectedRecipe
@@ -34,19 +33,25 @@ namespace CookMaster.ViewModels
             set { _selectedRecipe = value; OnPropertyChanged(); }
         }
 
-        public RecipeListViewModel(UserManager users, NavigationService nav)
+        public RecipeListViewModel(UserManager users, NavigationService nav, RecipeManager recipes)
         {
             _users = users;
             
             _nav = nav;
 
-            MyRecipes = _users.CurrentUser?.RecipeList;
+            _recipes = recipes;
 
-            _users.PropertyChanged += (_, e) =>
+            RecipesView = CollectionViewSource.GetDefaultView(_recipes.Recipes);
+            RecipesView.Filter = RecipeFilterPredicate;
+
+            // Lyssna på byten av CurrentUser → uppdatera filter
+            _users.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(UserManager.CurrentUser))
-                    MyRecipes = _users.CurrentUser?.RecipeList;
+                    RecipesView.Refresh();
             };
+
+
 
             AddRecipeCommand = new RelayCommand(_ => AddRecipe());
 
@@ -79,8 +84,21 @@ namespace CookMaster.ViewModels
         {
             if (SelectedRecipe is not null)
             {
-                MyRecipes?.Remove(SelectedRecipe);
+                _recipes.Remove  (SelectedRecipe);
             }
+        }
+
+        private bool RecipeFilterPredicate(object obj)
+        {
+            if (obj is not Recipe r) return false;
+
+            var u = _users.CurrentUser;
+            if (u is null) return false;                // ingen inloggad → visa inget (eller return true om du vill)
+
+            if (u.IsAdmin) return true;                 // admin ser allt
+
+            return r.IsGlobal ||
+             string.Equals(r.OwnerUsername, u.Username, StringComparison.OrdinalIgnoreCase);
         }
 
     }

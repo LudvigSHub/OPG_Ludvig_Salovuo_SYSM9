@@ -40,7 +40,7 @@
             </Grid.ColumnDefinitions>
 
 
-            <DataGrid ItemsSource="{Binding MyRecipes}"
+            <DataGrid ItemsSource="{Binding RecipesView}"
                   SelectedItem="{Binding SelectedRecipe, Mode=TwoWay}" 
                       CanUserAddRows="False" 
                       CanUserDeleteRows="False" 

@@ -59,7 +59,7 @@ namespace CookMaster.ViewModels
 
         // Själva kommandot som din Login-knapp binder till: Command="{Binding LoginCommand}"
         public ICommand LoginCommand { get; }
-
+        // Kommandot för att öppna registreringsvyn
         public ICommand RegisterCommand { get; }
 
 
@@ -71,7 +71,7 @@ namespace CookMaster.ViewModels
         }
 
 
-
+        // Metod för att öppna registreringsvyn
         private void OpenRegister()
         {
             var vm = new RegisterViewModel(_users, _nav, _recipes);
@@ -87,9 +87,8 @@ namespace CookMaster.ViewModels
             {
                 Message = "Login OK";
 
-                _recipes.SeedForCurrentUser();   // skapa default för denna user (en gång)
-                _recipes.SyncUserList();         // fyll MyRecipes (CurrentUser.RecipeList)
-                var recipeVm = new RecipeListViewModel(_users, _nav);     
+                         
+                var recipeVm = new RecipeListViewModel(_users, _nav, _recipes);     
                 _nav.NavigateTo<RecipeListView>(recipeVm);
 
 

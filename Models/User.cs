@@ -13,6 +13,8 @@ namespace CookMaster.Models
         public string Password { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
 
-        public ObservableCollection<Recipe> RecipeList { get; } = new();
+        public bool IsAdmin { get; set; } = false;
+
+
     }
 }

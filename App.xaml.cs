@@ -28,6 +28,13 @@ namespace CookMaster
             // Skapa RecipeManager som hanterar recept
             var recipeMgr = new RecipeManager(userManager);
 
+            // Skapar standardrecept som är tillgängliga för alla användare
+            recipeMgr.SeedDefaultsOnce();
+
+            // Skapar startrecept för den redan skapade användaren "user"
+            var u = userManager.FindUser("user");
+            recipeMgr.SeedForUser(u);
+
 
 
 

@@ -14,13 +14,19 @@ namespace CookMaster.Models
         public RecipeCategory Category { get; set; } = RecipeCategory.Other;
         public DateTime CreatedUtc { get; init; } = DateTime.UtcNow;
 
-        public string OwnerUsername { get; set; } = string.Empty;
 
 
-        
+        public string? OwnerUsername { get; set; } = null;
+
+        public bool IsGlobal => OwnerUsername is null;
+
+
+
+
+
     }
 
 }
 
-    
+
 

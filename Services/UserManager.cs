@@ -50,6 +50,10 @@ namespace CookMaster.Services
             return true;
         }
 
+        
+
+            
+
         public void Logout() => CurrentUser = null;
 
         // Metod för att registrera en ny användare.
