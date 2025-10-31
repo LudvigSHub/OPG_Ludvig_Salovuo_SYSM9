@@ -16,17 +16,25 @@ namespace CookMaster.ViewModels
 {
     public class RecipeListViewModel : ObservableObject
     {
+
+        // UserManager för att kunna kolla inloggad användare och dess rättigheter
         private readonly UserManager _users;
 
         public UserManager Users => _users;
 
+        // NavigationService för att kunna navigera till andra vyer
         private readonly NavigationService _nav;
 
+        // RecipeManager för att kunna hämta och hantera recept
         public RecipeManager _recipes;
 
+        // View för att binda till i vyn (ListBox, DataGrid, etc)
+        // Används för att kunna filtrera recept baserat på inloggad användare
         public ICollectionView RecipesView { get; }
 
+        // Property för att hålla reda på det valda receptet i UI
         private Recipe? _selectedRecipe;
+        // Bunden till vald rad i t.ex. en ListBox eller DataGrid
         public Recipe? SelectedRecipe
         {
             get => _selectedRecipe;
@@ -41,10 +49,13 @@ namespace CookMaster.ViewModels
 
             _recipes = recipes;
 
+            // Skapa en CollectionView för receptsamlingen
+            // 
             RecipesView = CollectionViewSource.GetDefaultView(_recipes.Recipes);
             RecipesView.Filter = RecipeFilterPredicate;
 
             // Lyssna på byten av CurrentUser → uppdatera filter
+            // 
             _users.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(UserManager.CurrentUser))
