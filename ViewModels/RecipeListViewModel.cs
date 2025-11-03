@@ -63,6 +63,7 @@ namespace CookMaster.ViewModels
             };
 
 
+            DetailsCommand = new RelayCommand(_ => OpenDetails(), _ => SelectedRecipe != null);
 
             AddRecipeCommand = new RelayCommand(_ => AddRecipe());
 
@@ -71,6 +72,7 @@ namespace CookMaster.ViewModels
             RemoveCommand = new RelayCommand (_ => removeSelectedRecipe());
         }
 
+        public ICommand DetailsCommand { get; }
         public ICommand AddRecipeCommand { get; }
         public ICommand RemoveCommand { get; }
 
@@ -97,6 +99,12 @@ namespace CookMaster.ViewModels
             {
                 _recipes.Remove  (SelectedRecipe);
             }
+        }
+
+        private void OpenDetails()
+        {
+            var vm = new RecipeDetailsViewModel(_users, _nav, _recipes, SelectedRecipe!);
+            _nav.NavigateTo<RecipeDetailsView>(vm);
         }
 
         private bool RecipeFilterPredicate(object obj)

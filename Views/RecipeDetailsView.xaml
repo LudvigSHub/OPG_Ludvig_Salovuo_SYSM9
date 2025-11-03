@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CookMaster.Views"
+        xmlns:viewModels="clr-namespace:CookMaster.ViewModels"
         mc:Ignorable="d"
         Title="RecipeDetailsView" Height="300" Width="500">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -18,53 +22,79 @@
                 <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="5* "/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Recipe Details" 
-                   HorizontalAlignment="Center" VerticalAlignment="Center" 
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+                <TextBox  Text="{Binding SelectedRecipe.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                   HorizontalAlignment="Left" VerticalAlignment="Center" 
                    Margin="0,0,0,0" 
-                   FontSize="24" FontWeight="Bold" />
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
-                <TextBlock Text="User:"  VerticalAlignment="Center" FontSize="14" Margin="0,0,5,0"/>
-                <TextBlock Text="{Binding Users.CurrentUser.Username}" VerticalAlignment="Center" FontSize="14" Margin="0,0,5,0"/>
-
-
-
+                   FontSize="14" FontWeight="Bold" />
+                <ComboBox Grid.Column="0" ItemsSource="{Binding Categories}" 
+                          SelectedItem="{Binding SelectedRecipe.Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                          HorizontalAlignment="Left" VerticalAlignment="Center" 
+                          Margin="0,0,0,0" 
+                          FontSize="12" FontWeight="Normal"/>
             </StackPanel>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <TextBlock Text="User: "  VerticalAlignment="Top" FontSize="14" />
+                    <TextBlock Text="{Binding SelectedRecipe.OwnerUsername}" VerticalAlignment="Top" FontSize="14" />
+
+                </StackPanel>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding SelectedRecipe.CreatedUtc, StringFormat=Created: \{0:yyyy-MM-dd\}}" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" 
+                              
+                               FontSize="14" FontWeight="Normal" />
+                </StackPanel>
+            </Grid>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*"/>
-                <ColumnDefinition Width="5*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="192*"/>
+                <ColumnDefinition Width="192*"/>
+                <ColumnDefinition Width="25*"/>
+                <ColumnDefinition Width="90*"/>
 
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Ingredients" HorizontalAlignment="Center" FontWeight="Bold" Margin="5,0,0,0"/>
-            <TextBlock Grid.Column="1" Text="Instructions" HorizontalAlignment="Center" FontWeight="Bold" Margin="5,0,0,0"/>
+            <TextBlock Grid.Column="0" Text="Ingredients" HorizontalAlignment="Left" FontWeight="Bold" Margin="67,0,0,0"/>
+            <TextBlock Grid.Column="1" Text="Instructions" HorizontalAlignment="Left" FontWeight="Bold" Margin="66,0,0,0"/>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="5*"/>
                 <ColumnDefinition Width="3*"/>
-                
+
             </Grid.ColumnDefinitions>
+
+
+
+
+            <ScrollViewer Grid.Column="0">
+                <ListBox Name="IngredientsListBox" Margin="5,0,0,0"
+                         ItemsSource="{Binding SelectedRecipe.Ingredients}" SelectedItem="{Binding SelectedIngredient}" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+
+            </ScrollViewer>
+
             
-
-
-
-            <StackPanel Grid.Column="0">
-                
-            </StackPanel>
-            <StackPanel Grid.Column="1">
-                
-            </StackPanel>
+            
+                <ScrollViewer Grid.Column="1" Height="Auto" Margin="5,0,0,0">
+                    <TextBox Text="{Binding SelectedRecipe.Instructions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap" VerticalAlignment="Top"/>
+                </ScrollViewer>
+            
             <StackPanel Height="auto" Grid.Column="2">
-                <Button Name="EditRecipe" Content="Edit" Height="30" Margin="5,5,5,0" />
+                <Button Name="EditRecipe" Content="Edit" Command="{Binding EditCommand}" 
+                        IsEnabled="{Binding IsEditing, Converter={StaticResource BoolToVis}, ConverterParameter=False}" Height="30" Margin="5,5,5,0" />
                 <Button Name="Save" Content="Save" Height="30" Margin="5,5,5,0"/>
-                
+                <Button Name="Cancel" Content="Cancel" Height="30" Margin="5,5,5,0"/> 
+
             </StackPanel>
 
-
+            
         </Grid>
 
     </Grid>

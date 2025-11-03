@@ -98,12 +98,24 @@ namespace CookMaster.Services
                     "200g spaghetti",
                     "100g minced beef",
                     "1 can tomato sauce",
+                    "White wine",
                     "1 onion",
                     "2 cloves garlic",
                     "Salt",
                     "Pepper",
                     "Olive oil"
                 },
+                Instructions = "1. Cook spaghetti according to package instructions.\n" +
+                               "2. In a pan, heat olive oil and sauté chopped onions and garlic until translucent.\n" +
+                               
+                               "3. Add minced beef and cook until browned.\n" +
+                               "4. Add tomato paste and let it cook for a few minutes. \n" +
+                               "5. Add white wine and let it reduce slightly.\n" +
+                               "6. Pour in tomato sauce, season with salt and pepper, and let it simmer for 15 minutes.\n" +
+                               "7. Taste the sauce and if needed add either: salt, sugar or vinegar. \n" +
+                               "8. Serve the sauce over the cooked spaghetti.\n",
+                               
+
                 Category = RecipeCategory.MainCourse,
                 CreatedUtc = DateTime.UtcNow,
                 OwnerUsername = user.Username
