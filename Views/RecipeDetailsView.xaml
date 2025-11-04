@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CookMaster.Views"
         xmlns:viewModels="clr-namespace:CookMaster.ViewModels"
+        xmlns:conv="clr-namespace:CookMaster.Converters"
         mc:Ignorable="d"
         Title="RecipeDetailsView" Height="300" Width="500">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <conv:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -22,17 +24,21 @@
                 <ColumnDefinition Width="5*" />
                 <ColumnDefinition Width="5* "/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Vertical">
-                <TextBox  Text="{Binding SelectedRecipe.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                   HorizontalAlignment="Left" VerticalAlignment="Center" 
-                   Margin="0,0,0,0" 
-                   FontSize="14" FontWeight="Bold" />
-                <ComboBox Grid.Column="0" ItemsSource="{Binding Categories}" 
-                          SelectedItem="{Binding SelectedRecipe.Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                          HorizontalAlignment="Left" VerticalAlignment="Center" 
-                          Margin="0,0,0,0" 
-                          FontSize="12" FontWeight="Normal"/>
+
+
+            <!-- Visa Title och Category sidan -->
+            <StackPanel Grid.Column="0" Orientation="Vertical" Visibility="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}">
+                <TextBlock Text="{Binding SelectedRecipe.Title}" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedRecipe.Category}"/>
             </StackPanel>
+            <!-- Edit Title och Category sidan -->
+            <StackPanel Grid.Column="0" Visibility="{Binding IsEditing, Converter={StaticResource BoolToVis}}">
+                <TextBox  Text="{Binding EditTitle, UpdateSourceTrigger=PropertyChanged}" FontWeight="Bold"/>
+                <ComboBox ItemsSource="{Binding Categories}"
+            SelectedItem="{Binding EditCategory, Mode=TwoWay}"/>
+            </StackPanel>
+
+
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="5*"/>
@@ -72,25 +78,47 @@
 
 
 
-
+            <!-- Visa ingredients sidan -->
             <ScrollViewer Grid.Column="0">
-                <ListBox Name="IngredientsListBox" Margin="5,0,0,0"
-                         ItemsSource="{Binding SelectedRecipe.Ingredients}" SelectedItem="{Binding SelectedIngredient}" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+                <ListBox Grid.Column="0" Name="IngredientsListBox" Margin="5,0,0,0"
+                         ItemsSource="{Binding SelectedRecipe.Ingredients}" Visibility="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/>
+                
 
             </ScrollViewer>
 
+            <!-- Edit ingredients sidan -->
+            <TextBox Grid.Column="0" Margin="5,0,0,0"
+                 Text="{Binding EditIngredientsText, UpdateSourceTrigger=PropertyChanged}"
+                 AcceptsReturn="True" TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto"
+                 Visibility="{Binding IsEditing, Converter={StaticResource BoolToVis}}"/>
+
+
+
+
+
+            <!-- Visa instructions sidan -->
+            <ScrollViewer Grid.Column="1" Height="Auto" Margin="5,0,0,0" Visibility="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}">
+                <TextBlock Text="{Binding SelectedRecipe.Instructions}"
+                           TextWrapping="Wrap"/>
+            </ScrollViewer>
+
+            <!-- Edit Instructions sidan -->
+            <TextBox Grid.Column="1" Margin="5,0,0,0"
+                     Text="{Binding EditInstructions, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True" TextWrapping="Wrap"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     Visibility="{Binding IsEditing, Converter={StaticResource BoolToVis}}"/>
+
             
-            
-                <ScrollViewer Grid.Column="1" Height="Auto" Margin="5,0,0,0">
-                    <TextBox Text="{Binding SelectedRecipe.Instructions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         TextWrapping="Wrap" VerticalAlignment="Top"/>
-                </ScrollViewer>
             
             <StackPanel Height="auto" Grid.Column="2">
                 <Button Name="EditRecipe" Content="Edit" Command="{Binding EditCommand}" 
-                        IsEnabled="{Binding IsEditing, Converter={StaticResource BoolToVis}, ConverterParameter=False}" Height="30" Margin="5,5,5,0" />
-                <Button Name="Save" Content="Save" Height="30" Margin="5,5,5,0"/>
-                <Button Name="Cancel" Content="Cancel" Height="30" Margin="5,5,5,0"/> 
+                        IsEnabled="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}" Height="30" Margin="5,5,5,0" />
+                <Button Name="Save" Content="Save" Height="30" Margin="5,5,5,0"
+                        Command="{Binding SaveCommand}" IsEnabled="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/>
+                <Button Name="Cancel" Content="Cancel" Height="30" Margin="5,5,5,0"
+                        Command="{Binding CancelCommand}" IsEnabled="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/> 
 
             </StackPanel>
 

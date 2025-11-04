@@ -5,8 +5,66 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CookMaster.Views"
         mc:Ignorable="d"
-        Title="AddRecipeView" Height="450" Width="800">
+        Title="AddRecipeView" Height="600" Width="400">
+    <Window.Resources>
+        <!-- Watermark style for TextBox -->
+        <Style x:Key="WatermarkTextBox" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                            <!-- The watermark -->
+                            <TextBlock x:Name="Watermark"
+                       Text="{TemplateBinding Tag}"
+                       Margin="6,4,6,4"
+                       Foreground="#99000000"
+                       IsHitTestVisible="False"
+                       Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- Show watermark when Text is empty -->
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <!-- Also show when Text is null (extra safety) -->
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <StackPanel>
+            <TextBlock Text="New Recipe" HorizontalAlignment="Center" FontSize="24" Margin="0,5,0,0"/>
+            <TextBlock Text="Title" Margin="10,10,0,0" HorizontalAlignment="Center"/>
+            <TextBox Text="{Binding NewRecipeTitle, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,5,10,0" HorizontalAlignment="Center"/>
+            <TextBlock Text="Category" Margin="10,10,0,0" HorizontalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Categories}" 
+                      SelectedItem="{Binding NewRecipeCategory, Mode=TwoWay}" 
+                      Width="200" Margin="10,5,10,0" HorizontalAlignment="Center"/>
+            <TextBlock Text="Ingredients" Margin="10,10,0,0" HorizontalAlignment="Center"/>
+            <TextBlock Text="(Separate ingredients with commas)" FontSize="10" Margin="10,0,0,0" HorizontalAlignment="Center"/>
+            
+            <TextBox Width="300" Height="100" Style="{StaticResource WatermarkTextBox}"
+                     Tag="Write measurements in grams and/or in units,
+                     Example: egg yolks 2, cheese 300g"
+                     Text="{Binding NewIngredientsText, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True" TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"/>
+            <TextBlock Text="Instructions" Margin="10,10,0,0" HorizontalAlignment="Center"/>
+            
+            <TextBox Text="{Binding NewRecipeInstructions, UpdateSourceTrigger=PropertyChanged}" 
+                     Width="300" Height="150" Margin="10,5,10,0" 
+                     HorizontalAlignment="Center" 
+                     AcceptsReturn="True" TextWrapping="Wrap"/>
+            <Button Content="Add Recipe" Command="{Binding AddCommand}"
+                    Height="30" Width="80" Margin="10,10,0,0"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}"
+                    Height="30" Width="80" Margin="10,10,0,0"/>
+        </StackPanel> 
     </Grid>
 </Window>

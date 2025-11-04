@@ -82,14 +82,14 @@ namespace CookMaster.ViewModels
 
         public void AddRecipe()
         {
-            var recipeVm = new AddRecipeViewModel(_users, _nav);
+            var recipeVm = new AddRecipeViewModel(_users, _nav, _recipes);
             _nav.NavigateTo<AddRecipeView>(recipeVm);
         }
 
         public void SignOut()
         {
             _users.Logout();
-            var loginVm = new MainViewModel(_users, _nav, new RecipeManager(_users));
+            var loginVm = new MainViewModel(_users, _nav, _recipes);
             _nav.NavigateTo<MainWindow>(loginVm);
         }
         
