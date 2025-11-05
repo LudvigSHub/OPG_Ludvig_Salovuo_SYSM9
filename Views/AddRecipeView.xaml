@@ -9,14 +9,22 @@
     <Window.Resources>
         <!-- Watermark style for TextBox -->
         <Style x:Key="WatermarkTextBox" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Grid>
-                            <ScrollViewer x:Name="PART_ContentHost"/>
+                            <Border x:Name="Bd"
+                              Background="{TemplateBinding Background}"
+                              BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}"/>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2"/>
                             <!-- The watermark -->
                             <TextBlock x:Name="Watermark"
                        Text="{TemplateBinding Tag}"
+                                       TextWrapping="Wrap"
                        Margin="6,4,6,4"
                        Foreground="#99000000"
                        IsHitTestVisible="False"
@@ -56,8 +64,11 @@
                      AcceptsReturn="True" TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto"/>
             <TextBlock Text="Instructions" Margin="10,10,0,0" HorizontalAlignment="Center"/>
-            
-            <TextBox Text="{Binding NewRecipeInstructions, UpdateSourceTrigger=PropertyChanged}" 
+
+            <TextBox Style="{StaticResource WatermarkTextBox}"
+                     Tag="Write measurements in grams and/or in units,
+                     Example: egg yolks 2, cheese 300g"
+                     Text="{Binding NewRecipeInstructions, UpdateSourceTrigger=PropertyChanged}" 
                      Width="300" Height="150" Margin="10,5,10,0" 
                      HorizontalAlignment="Center" 
                      AcceptsReturn="True" TextWrapping="Wrap"/>
