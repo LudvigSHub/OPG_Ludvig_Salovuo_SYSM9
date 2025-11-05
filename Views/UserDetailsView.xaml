@@ -1,0 +1,58 @@
+﻿<Window x:Class="CookMaster.Views.UserDetailsView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CookMaster.Views"
+        mc:Ignorable="d"
+        Title="UserDetailsView" Height="450" Width="250">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Nuvarande info -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="Current username:" FontWeight="Bold"/>
+            <TextBlock Text="{Binding CurrentUsername}" Margin="0,2,0,8"/>
+            <TextBlock Text="Current country:" FontWeight="Bold"/>
+            <TextBlock Text="{Binding CurrentCountry}" Margin="0,2,0,0"/>
+        </StackPanel>
+
+        <!-- Nytt användarnamn -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,8">
+            <TextBlock Text="New username:"/>
+            <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+
+        <!-- Nytt lösenord -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,8">
+            <TextBlock Text="New password (optional):"/>
+            <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+
+        <!-- Bekräfta lösenord -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,8">
+            <TextBlock Text="Confirm password:"/>
+            <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding ConfirmPassword, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+
+        <!-- Land -->
+        <StackPanel Grid.Row="4" Margin="0,0,0,8">
+            <TextBlock Text="Country:"/>
+            <ComboBox Width="200" HorizontalAlignment="Left" ItemsSource="{Binding Countries}"
+                      SelectedItem="{Binding SelectedCountry}" />
+        </StackPanel>
+
+        <!-- Knappar -->
+        <StackPanel Grid.Row="5" Orientation="Vertical" HorizontalAlignment="Center">
+            <Button Content="Save"   Command="{Binding SaveCommand}"  Height="30" Width="100"  Margin="0,0,8,8"/>
+            <Button Content="Cancel" Command="{Binding CancelCommand}" Height="30" Width="100" Margin="0,0,8,8" />
+        </StackPanel>
+    </Grid>
+</Window>

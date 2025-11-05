@@ -49,10 +49,10 @@
         <StackPanel>
             <TextBlock Text="New Recipe" HorizontalAlignment="Center" FontSize="24" Margin="0,5,0,0"/>
             <TextBlock Text="Title" Margin="10,10,0,0" HorizontalAlignment="Center"/>
-            <TextBox Text="{Binding NewRecipeTitle, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,5,10,0" HorizontalAlignment="Center"/>
+            <TextBox Text="{Binding NewTitle, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="10,5,10,0" HorizontalAlignment="Center"/>
             <TextBlock Text="Category" Margin="10,10,0,0" HorizontalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding Categories}" 
-                      SelectedItem="{Binding NewRecipeCategory, Mode=TwoWay}" 
+                      SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" 
                       Width="200" Margin="10,5,10,0" HorizontalAlignment="Center"/>
             <TextBlock Text="Ingredients" Margin="10,10,0,0" HorizontalAlignment="Center"/>
             <TextBlock Text="(Separate ingredients with commas)" FontSize="10" Margin="10,0,0,0" HorizontalAlignment="Center"/>
@@ -66,15 +66,19 @@
             <TextBlock Text="Instructions" Margin="10,10,0,0" HorizontalAlignment="Center"/>
 
             <TextBox Style="{StaticResource WatermarkTextBox}"
-                     Tag="Write measurements in grams and/or in units,
-                     Example: egg yolks 2, cheese 300g"
-                     Text="{Binding NewRecipeInstructions, UpdateSourceTrigger=PropertyChanged}" 
+                     Tag="Write cooking steps (one per line).
+                     Example:
+                                                                        1. Boil pasta  
+                                                               2. Fry Pancetta 
+                                                            3. Mix and serve"
+                          
+                     Text="{Binding NewInstructions, UpdateSourceTrigger=PropertyChanged}" 
                      Width="300" Height="150" Margin="10,5,10,0" 
                      HorizontalAlignment="Center" 
                      AcceptsReturn="True" TextWrapping="Wrap"/>
-            <Button Content="Add Recipe" Command="{Binding AddCommand}"
+            <Button Content="Add Recipe" Command="{Binding AddCommand}" IsEnabled="{Binding CanAddRecipe}"
                     Height="30" Width="80" Margin="10,10,0,0"/>
-            <Button Content="Cancel" Command="{Binding CancelCommand}"
+            <Button Content="Cancel" Command="{Binding CancelCommand}" 
                     Height="30" Width="80" Margin="10,10,0,0"/>
         </StackPanel> 
     </Grid>

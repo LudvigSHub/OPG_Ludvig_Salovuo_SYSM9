@@ -44,7 +44,7 @@ namespace CookMaster.ViewModels
         public RecipeListViewModel(UserManager users, NavigationService nav, RecipeManager recipes)
         {
             _users = users;
-            
+
             _nav = nav;
 
             _recipes = recipes;
@@ -63,22 +63,28 @@ namespace CookMaster.ViewModels
             };
 
 
-            DetailsCommand = new RelayCommand(_ => OpenDetails(), _ => SelectedRecipe != null);
+            RecipeDetailsCommand = new RelayCommand(_ => RecipeDetails(), _ => SelectedRecipe != null);
 
             AddRecipeCommand = new RelayCommand(_ => AddRecipe());
 
             SignOutCommand = new RelayCommand(_ => SignOut());
 
-            RemoveCommand = new RelayCommand (_ => removeSelectedRecipe());
+            RemoveCommand = new RelayCommand(_ => removeSelectedRecipe(), _ => SelectedRecipe != null);
+
+            UserDetailsCommand = new RelayCommand(_ => UserDetails());
+
+            InfoCommand = new RelayCommand(_ => ShowInfo());
         }
 
-        public ICommand DetailsCommand { get; }
+        public ICommand RecipeDetailsCommand { get; }
         public ICommand AddRecipeCommand { get; }
         public ICommand RemoveCommand { get; }
 
         public ICommand SignOutCommand { get; }
 
+        public ICommand UserDetailsCommand { get; }
 
+        public ICommand InfoCommand { get; }
 
         public void AddRecipe()
         {
@@ -92,16 +98,16 @@ namespace CookMaster.ViewModels
             var loginVm = new MainViewModel(_users, _nav, _recipes);
             _nav.NavigateTo<MainWindow>(loginVm);
         }
-        
+
         public void removeSelectedRecipe()
         {
             if (SelectedRecipe is not null)
             {
-                _recipes.Remove  (SelectedRecipe);
+                _recipes.Remove(SelectedRecipe);
             }
         }
 
-        private void OpenDetails()
+        private void RecipeDetails()
         {
             var vm = new RecipeDetailsViewModel(_users, _nav, _recipes, SelectedRecipe!);
             _nav.NavigateTo<RecipeDetailsView>(vm);
@@ -120,5 +126,18 @@ namespace CookMaster.ViewModels
              string.Equals(r.OwnerUsername, u.Username, StringComparison.OrdinalIgnoreCase);
         }
 
+        private void UserDetails()
+        {
+            var vm = new UserDetailsViewModel(_users, _recipes, _nav);
+            _nav.NavigateTo<UserDetailsView>(vm);
+        }
+
+        private void ShowInfo()
+        {
+            var vm = new InfoViewModel(_users, _recipes, _nav);
+            _nav.NavigateTo<InfoView>(vm);
+
+        }
     }
+
 }

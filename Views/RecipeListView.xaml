@@ -58,10 +58,10 @@
             </DataGrid>
             <StackPanel Height="auto" Grid.Column="1">
                 <Button Name="AddRecipe" Content="Add recipe" Height="30" Margin="5,5,5,0" Command="{Binding AddRecipeCommand}"/>
-                <Button Name="RecipeDetails" Content="Recipe details" Height="30" Margin="5,5,5,0" Command="{Binding DetailsCommand}"/>
-                <Button Name="RemoveRecipe" Content="Remove recipe" Height="30" Margin="5,5,5,0"/>
-                <Button Name="UserDetails" Content="User details" Height="30" Margin="5,5,5,0"/>
-                <Button Name="Info" Content="Info" Height="30" Margin="5,5,5,0"/>
+                <Button Name="RecipeDetails" Content="Recipe details" Height="30" Margin="5,5,5,0" Command="{Binding RecipeDetailsCommand}"/>
+                <Button Name="RemoveRecipe" Content="Remove recipe" Height="30" Margin="5,5,5,0" Command="{Binding RemoveCommand}"/>
+                <Button Name="UserDetails" Content="User details" Height="30" Margin="5,5,5,0" Command="{Binding UserDetailsCommand}"/>
+                <Button Name="Info" Content="Info" Height="30" Margin="5,5,5,0" Command="{Binding InfoCommand}"/>
                 <Button Name="SignOut" Content="Sign out" Height="30" Margin="5,5,5,0" Command="{Binding SignOutCommand}"/>
             </StackPanel>
 

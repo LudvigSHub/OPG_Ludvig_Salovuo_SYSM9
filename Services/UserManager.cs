@@ -108,6 +108,98 @@ namespace CookMaster.Services
             return true;
         }
 
+        public bool UpdateUser(User user,
+                       string? newUsername,
+                       string? newPassword,
+                       string? confirmPassword,
+                       string? newCountry,
+                       out string error)
+        {
+            error = string.Empty;
+            if (user is null) { error = "No user."; return false; }
+
+            // Username 
+            if (!string.IsNullOrWhiteSpace(newUsername) &&
+                !newUsername.Equals(user.Username, StringComparison.Ordinal))
+            {
+                var u = newUsername.Trim();
+                if (u.Length < 3)
+                {
+                    error = "Username must be at least 3 characters.";
+                    return false;
+                }
+
+                // ej tillåtet om taget av annan
+                if (_users.Any(x => !ReferenceEquals(x, user) &&
+                                    x.Username.Equals(u, StringComparison.OrdinalIgnoreCase)))
+                {
+                    error = "Username already exists.";
+                    return false;
+                }
+            }
+
+            //  Password 
+            var pwChangeRequested = !string.IsNullOrEmpty(newPassword) || !string.IsNullOrEmpty(confirmPassword);
+            if (pwChangeRequested)
+            {
+                
+                // (8 tecken, minst en siffra, minst ett specialtecken)
+                var pw = newPassword ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(pw))
+                {
+                    error = "Password is required.";
+                    return false;
+                }
+
+                if (pw.Length < 8)
+                {
+                    error = "Password has to be at least 8 characters!";
+                    return false;
+                }
+
+                if (!pw.Any(char.IsDigit))
+                {
+                    error = "Password must contain at least one number.";
+                    return false;
+                }
+
+                const string specialChars = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
+                if (!pw.Any(specialChars.Contains))
+                {
+                    error = "Password must contain at least one special character.";
+                    return false;
+                }
+
+                if (!string.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
+                {
+                    error = "New password and confirmation do not match.";
+                    return false;
+                }
+            }
+
+            // Country 
+            if (string.IsNullOrWhiteSpace(newCountry))
+            {
+                error = "Country is required.";
+                return false;
+            }
+
+            // om allt ok, uppdatera användaren
+            if (!string.IsNullOrWhiteSpace(newUsername) &&
+                !newUsername.Equals(user.Username, StringComparison.Ordinal))
+            {
+                user.Username = newUsername.Trim();
+            }
+
+            if (pwChangeRequested)
+                user.Password = newPassword!;
+
+            user.Country = newCountry;
+
+            return true;
+        }
+
         public User? FindUser(string username) =>
             _users.FirstOrDefault(x => x.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
     }

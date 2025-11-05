@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace CookMaster.ViewModels
@@ -115,12 +116,36 @@ namespace CookMaster.ViewModels
             return tokens;
         }
 
+        // Normalisera instruktionstext
+        // Tar bort extra tomrader och normaliserar radslut
+        private static string Normalize(string? s)
+        {
+            // s står för instruktionstexten
+            // Om s är null → ersätt med tom sträng.
+            //Trim() tar bort tomrum i början / slutet(mellanslag, tabbar, radbrytningar).
+            var t = (s ?? string.Empty).Trim();
+
+            // normalisera radslut
+            t = t.Replace("\r\n", "\n").Replace("\r", "\n");
+
+            //Delar texten till en lista av rader.
+            // ta bort extra tomrader (valfritt)
+            var lines = t.Split('\n')
+                         .Select(x => x.TrimEnd())
+                         .ToList();
+            for (int i = lines.Count - 2; i >= 0; i--)
+                if (string.IsNullOrWhiteSpace(lines[i]) && string.IsNullOrWhiteSpace(lines[i + 1]))
+                    lines.RemoveAt(i + 1);
+            //Slår ihop raderna med \r\n(Windows - standard).
+            return string.Join("\r\n", lines);
+        }
+
         private void AddRecipe()
         {
             var r1 = new Recipe
             {
                 Title = NewTitle,
-                Instructions = NewInstructions,
+                Instructions = Normalize(NewInstructions),
                 Ingredients = ParseIngredients(NewIngredientsText),
                 Category = SelectedCategory!.Value,
                 CreatedUtc = DateTime.UtcNow
