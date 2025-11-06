@@ -13,8 +13,16 @@ namespace CookMaster.Models
         public string Password { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
 
-        public bool IsAdmin { get; set; } = false;
+        public virtual bool IsAdmin { get; protected set; } = false;
 
 
+    }
+
+    public class Admin : User
+    {
+        public Admin()
+        {
+            IsAdmin = true;
+        }
     }
 }

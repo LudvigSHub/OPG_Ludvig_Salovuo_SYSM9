@@ -9,6 +9,8 @@ using System.Windows.Data;
 
 namespace CookMaster.Converters
 {
+    // Används För att binda en bool till en visibility egenskap i XAML
+    // Just i detta fallet är det för view eller edit läge i recipedetails
     public class InverseBooleanToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type t, object p, CultureInfo c)

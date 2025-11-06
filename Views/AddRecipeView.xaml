@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CookMaster.Views"
         mc:Ignorable="d"
-        Title="AddRecipeView" Height="600" Width="400">
+        Title="AddRecipeView" Height="600" Width="400"
+        WindowStartupLocation="CenterScreen">
+    
     <Window.Resources>
         <!-- Watermark style for TextBox -->
         <Style x:Key="WatermarkTextBox" TargetType="TextBox">

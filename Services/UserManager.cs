@@ -13,7 +13,10 @@ namespace CookMaster.Services
 {
     public class UserManager : ObservableObject
     {
+        // Skapar en ny privat, modifierbar samling av users
         private readonly ObservableCollection<User> _users = new();
+
+        // Exponerar en ReadOnlyObservableCollection av users
         public ReadOnlyObservableCollection<User> Users { get; }
 
         private User? _currentUser;
@@ -35,7 +38,7 @@ namespace CookMaster.Services
         {
             Users = new ReadOnlyObservableCollection<User>(_users);
 
-            _users.Add(new User { Username = "admin", Password = "1234", Country = "Sweden" });
+            _users.Add(new Admin { Username = "admin", Password = "1234", Country = "Sweden"});
             _users.Add(new User { Username = "user", Password = "1234", Country = "Sweden" });
         }
 

@@ -145,9 +145,10 @@ namespace CookMaster.Services
             _recipes.Add(r2);
         }
 
-        
+
 
         //Lägg för current user 
+        // används i AddRecipeViewModel när ett nytt recept skapas
         public void AddForCurrentUser(Recipe recipe)
         {
             var u = _users.CurrentUser ?? throw new InvalidOperationException("No user");

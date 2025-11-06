@@ -8,7 +8,50 @@
         xmlns:viewModels="clr-namespace:CookMaster.ViewModels"
         
         mc:Ignorable="d"
-        Title="CookMaster" Height="300" Width="500">
+        Title="CookMaster" Height="400" Width="640"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <!-- Watermark style for TextBox -->
+        <Style x:Key="WatermarkTextBox" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <Border x:Name="Bd"
+                          Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}"/>
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="2"/>
+                            <!-- The watermark -->
+                            <TextBlock x:Name="Watermark"
+                   Text="{TemplateBinding Tag}"
+                                   TextWrapping="Wrap"
+                   Margin="6,4,6,4"
+                   TextAlignment="Center"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Foreground="#99000000"
+                   IsHitTestVisible="False"
+                   Visibility="Collapsed"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <!-- Show watermark when Text is empty -->
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <!-- Also show when Text is null (extra safety) -->
+                            <Trigger Property="Text" Value="{x:Null}">
+                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -22,6 +65,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="Recipe Manager" 
                        HorizontalAlignment="Center" VerticalAlignment="Center" 
+                       
                        Margin="0,0,0,0" 
                        FontSize="24" FontWeight="Bold" />
             
@@ -39,23 +83,47 @@
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
+            <StackPanel Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource WatermarkTextBox}" Tag="Search Title" TextWrapping="Wrap"
+                             Height="20" Width="100" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBlock Text="Category"
+                             IsHitTestVisible="False"
+                             Margin="0,0,0,0"
+                             VerticalAlignment="Center"
+                             Foreground="Gray"/>
+                    <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}"
+                             Height="20" Width="100" VerticalAlignment="Center" Margin="5,5,5,5"/>
 
-            <DataGrid ItemsSource="{Binding RecipesView}"
+                    <DatePicker Width="105"
+                             SelectedDate="{Binding ExactDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button Content="Clear" Height="20" Margin="5,5,5,5" Command="{Binding ClearFiltersCommand}"/> 
+
+
+                </StackPanel>
+                <DataGrid  ItemsSource="{Binding RecipesView}"
                   SelectedItem="{Binding SelectedRecipe, Mode=TwoWay}" 
                       CanUserAddRows="False" 
                       CanUserDeleteRows="False" 
                       AutoGenerateColumns="False"
                       IsReadOnly="True">
 
-                
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Recipe title" Binding="{Binding Title}" Width="1*"/>
-                    <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="1*"/>
-                    <DataGridTextColumn Header="Date" Binding="{Binding CreatedUtc, StringFormat=\{0:yyyy-MM-dd\}}" Width="0.5*"/>
-                </DataGrid.Columns>
 
-                <!--Binding item SelectedItem.(Property) för att välja specifik property av selected item till varje textbox  -->
-            </DataGrid>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Recipe title" Binding="{Binding Title}" Width="1*"/>
+                        <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="0.6*"/>
+                        <DataGridTextColumn Header="Date" Binding="{Binding CreatedUtc, StringFormat=\{0:yyyy-MM-dd\}}" Width="0.5*"/>
+                        <DataGridTextColumn Header="Owner" Width="0.4*">
+                            <DataGridTextColumn.Binding>
+                                <Binding Path="OwnerUsername" TargetNullValue="Global"/>
+                            </DataGridTextColumn.Binding>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            <!--Binding item SelectedItem.(Property) för att välja specifik property av selected item till varje textbox  -->
+            
             <StackPanel Height="auto" Grid.Column="1">
                 <Button Name="AddRecipe" Content="Add recipe" Height="30" Margin="5,5,5,0" Command="{Binding AddRecipeCommand}"/>
                 <Button Name="RecipeDetails" Content="Recipe details" Height="30" Margin="5,5,5,0" Command="{Binding RecipeDetailsCommand}"/>

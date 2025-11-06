@@ -7,7 +7,8 @@
         xmlns:viewModels="clr-namespace:CookMaster.ViewModels"
         xmlns:conv="clr-namespace:CookMaster.Converters"
         mc:Ignorable="d"
-        Title="RecipeDetailsView" Height="300" Width="500">
+        Title="RecipeDetailsView" Height="300" Width="500"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         <conv:InverseBooleanToVisibilityConverter x:Key="InvBoolToVis"/>
@@ -46,8 +47,8 @@
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" >
                     <TextBlock Text="User: "  VerticalAlignment="Top" FontSize="14" />
-                    <TextBlock Text="{Binding SelectedRecipe.OwnerUsername}" VerticalAlignment="Top" FontSize="14" />
-
+                    <TextBlock Text="{Binding Users.CurrentUser.Username}" VerticalAlignment="Top" FontSize="14" />
+                    
                 </StackPanel>
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock Text="{Binding SelectedRecipe.CreatedUtc, StringFormat=Created: \{0:yyyy-MM-dd\}}" 
@@ -98,10 +99,12 @@
 
 
             <!-- Visa instructions sidan -->
-            <ScrollViewer Grid.Column="1" Height="Auto" Margin="5,0,0,0" Visibility="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}">
-                <TextBlock Text="{Binding SelectedRecipe.Instructions}"
-                           TextWrapping="Wrap"/>
-            </ScrollViewer>
+            <TextBox Grid.Column="1" Margin="5,0,0,0"
+                     Text="{Binding SelectedRecipe.Instructions}"
+                     IsReadOnly="True"
+                     AcceptsReturn="True" TextWrapping="Wrap"
+                     VerticalScrollBarVisibility="Auto"
+                     Visibility="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/>
 
             <!-- Edit Instructions sidan -->
             <TextBox Grid.Column="1" Margin="5,0,0,0"
@@ -118,7 +121,9 @@
                 <Button Name="Save" Content="Save" Height="30" Margin="5,5,5,0"
                         Command="{Binding SaveCommand}" IsEnabled="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/>
                 <Button Name="Cancel" Content="Cancel" Height="30" Margin="5,5,5,0"
-                        Command="{Binding CancelCommand}" IsEnabled="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/> 
+                        Command="{Binding CancelCommand}" IsEnabled="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/>
+                <Button Name="Copy" Content="Copy" Height="30" Margin="5,5,5,0"
+                        Command="{Binding CopyCommand}" IsEnabled="{Binding IsEditing, Converter={StaticResource InvBoolToVis}}"/>
 
             </StackPanel>
 

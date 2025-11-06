@@ -35,6 +35,14 @@ namespace CookMaster.ViewModels
 
         }
 
+        //Överlagrad konstruktor som tar templaterecept
+        public AddRecipeViewModel(UserManager users, NavigationService nav, RecipeManager recipe, Recipe? template)
+        : this(users, nav, recipe) // anropa den vanliga konstruktorn först
+        {
+            if (template != null)
+                PrefillFrom(template);  // fyll NewTitle/NewInstructions/ från template
+        }
+
         public ICommand AddCommand { get; }
 
         public ICommand CancelCommand { get; }
@@ -170,7 +178,20 @@ namespace CookMaster.ViewModels
           !string.IsNullOrWhiteSpace(NewIngredientsText) &&
           SelectedCategory is not null;
 
-       
+        private void PrefillFrom(Recipe template)
+        {
+            NewTitle = (template.Title ?? string.Empty) + " (copy)";
+            NewInstructions = template.Instructions ?? string.Empty;
+            NewIngredientsText = string.Join(Environment.NewLine, template.Ingredients ?? new());
+            SelectedCategory = template.Category;
+
+            OnPropertyChanged(nameof(NewTitle));
+            OnPropertyChanged(nameof(NewInstructions));
+            OnPropertyChanged(nameof(NewIngredientsText));
+            OnPropertyChanged(nameof(SelectedCategory));
+            OnPropertyChanged(nameof(CanAddRecipe));
+            CommandManager.InvalidateRequerySuggested();
+        }
 
     }
 }

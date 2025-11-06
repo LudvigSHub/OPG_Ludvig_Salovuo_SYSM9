@@ -49,6 +49,7 @@ namespace CookMaster.ViewModels
         public ICommand EditCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
+        public ICommand CopyCommand { get; }
 
 
         public RecipeDetailsViewModel(UserManager users, NavigationService nav, RecipeManager recipes, Recipe recipe)
@@ -63,7 +64,8 @@ namespace CookMaster.ViewModels
 
             EditCommand = new RelayCommand(_ => StartEdit(), _ => CanEdit());
             SaveCommand = new RelayCommand(_ => Save(), _ => IsEditing);
-            CancelCommand = new RelayCommand(_ => Cancel(), _ => IsEditing);
+            CancelCommand = new RelayCommand(_ => Cancel());
+            CopyCommand = new RelayCommand(_ => Copy());
         }
 
         // källan för kategorier i combobox vid redigering/skapande av recept
@@ -122,10 +124,24 @@ namespace CookMaster.ViewModels
 
         private void Cancel()
         {
-            IsEditing = false; 
+            if (IsEditing) 
+            {
+                IsEditing = false;
+                return;
+                
+            }
+            var vm = new RecipeListViewModel(_users, _nav, _recipes);
+            _nav.NavigateTo<RecipeListView>(vm);
+
         }
 
-        
+        private void Copy()
+        {
+            var vm = new AddRecipeViewModel(_users, _nav, _recipes, SelectedRecipe); // skickar med template till AddRecipeViewModel
+            _nav.NavigateTo<AddRecipeView>(vm);
+        }
+
+
 
 
     }

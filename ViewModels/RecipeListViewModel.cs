@@ -50,9 +50,8 @@ namespace CookMaster.ViewModels
             _recipes = recipes;
 
             // Skapa en CollectionView för receptsamlingen
-            // 
             RecipesView = CollectionViewSource.GetDefaultView(_recipes.Recipes);
-            RecipesView.Filter = RecipeFilterPredicate;
+            RecipesView.Filter = CombinedFilter;
 
             // Lyssna på byten av CurrentUser → uppdatera filter
             // 
@@ -74,7 +73,46 @@ namespace CookMaster.ViewModels
             UserDetailsCommand = new RelayCommand(_ => UserDetails());
 
             InfoCommand = new RelayCommand(_ => ShowInfo());
+
+            ClearFiltersCommand = new RelayCommand(_ => {
+                using (RecipesView.DeferRefresh())
+                {
+                    SearchText = null;
+                    SelectedCategory = null;
+                    ExactDate = null;
+                }
+            });
+
+
         }
+
+        // Källan för Categories i combobox vid search categories
+        public IReadOnlyList<RecipeCategory> Categories { get; } =
+        Enum.GetValues(typeof(RecipeCategory)).Cast<RecipeCategory>().ToList();
+
+        private string? _searchText;
+        public string? SearchText
+        {
+            get => _searchText;
+            set { if (_searchText == value) return; _searchText = value; OnPropertyChanged(); RecipesView.Refresh(); }
+        }
+
+        private RecipeCategory? _selectedCategory;
+        public RecipeCategory? SelectedCategory
+        {
+            get => _selectedCategory;
+            set { if (_selectedCategory == value) return; _selectedCategory = value; OnPropertyChanged(); RecipesView.Refresh(); }
+        }
+
+        private DateTime? _exactDate;
+        public DateTime? ExactDate
+        {
+            get => _exactDate;
+            set { if (_exactDate == value) return; _exactDate = value; OnPropertyChanged(); RecipesView.Refresh(); }
+        }
+        
+
+
 
         public ICommand RecipeDetailsCommand { get; }
         public ICommand AddRecipeCommand { get; }
@@ -85,6 +123,10 @@ namespace CookMaster.ViewModels
         public ICommand UserDetailsCommand { get; }
 
         public ICommand InfoCommand { get; }
+
+        public ICommand ClearFiltersCommand { get; }
+
+
 
         public void AddRecipe()
         {
@@ -138,6 +180,38 @@ namespace CookMaster.ViewModels
             _nav.NavigateTo<InfoView>(vm);
 
         }
+
+        private bool CombinedFilter(object obj)
+        {
+            //Basfilter först
+            // Kolla om receptet är synligt för den inloggade användaren
+            if (!RecipeFilterPredicate(obj)) return false;
+
+            var r = (Recipe)obj;
+
+            // en filtrering i taget: Title > Category > ExactDate
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                var q = SearchText!.Trim();
+                return (r.Title?.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0)
+                     || (r.Instructions?.IndexOf(q, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            else if (SelectedCategory is RecipeCategory cat)
+            {
+                return r.Category == cat;
+            }
+            else if (ExactDate is DateTime d)
+            {
+                return r.CreatedUtc.Date == d.Date;
+            }
+
+            // 3) Inget extra filter valt → visa allt som passerade basfiltret
+            return true;
+        }
+
+
+
+
     }
 
 }
