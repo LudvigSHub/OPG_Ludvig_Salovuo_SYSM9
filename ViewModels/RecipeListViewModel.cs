@@ -74,14 +74,8 @@ namespace CookMaster.ViewModels
 
             InfoCommand = new RelayCommand(_ => ShowInfo());
 
-            ClearFiltersCommand = new RelayCommand(_ => {
-                using (RecipesView.DeferRefresh())
-                {
-                    SearchText = null;
-                    SelectedCategory = null;
-                    ExactDate = null;
-                }
-            });
+            ClearFiltersCommand = new RelayCommand(_ => ClearFilters());
+
 
 
         }
@@ -110,7 +104,7 @@ namespace CookMaster.ViewModels
             get => _exactDate;
             set { if (_exactDate == value) return; _exactDate = value; OnPropertyChanged(); RecipesView.Refresh(); }
         }
-        
+
 
 
 
@@ -209,9 +203,15 @@ namespace CookMaster.ViewModels
             return true;
         }
 
+        private void ClearFilters()
+        {
+            SearchText = null;
+            SelectedCategory = null;
+            ExactDate = null;
 
 
+
+        }
 
     }
-
 }

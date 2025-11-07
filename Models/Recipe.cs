@@ -17,7 +17,7 @@ namespace CookMaster.Models
 
 
         public string? OwnerUsername { get; set; } = null;
-
+        // Om OwnerUsername är null → globalt recept
         public bool IsGlobal => OwnerUsername is null;
 
 

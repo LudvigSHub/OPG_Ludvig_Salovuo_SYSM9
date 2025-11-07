@@ -72,6 +72,8 @@ namespace CookMaster.ViewModels
         public IReadOnlyList<RecipeCategory> Categories { get; } =
         Enum.GetValues(typeof(RecipeCategory)).Cast<RecipeCategory>().ToList();
 
+        // Bool som kollar användarnamnet
+        // kollar om användaren kan redigera det valda receptet
         private bool CanEdit()
         {
             var u = _users.CurrentUser;
@@ -99,6 +101,8 @@ namespace CookMaster.ViewModels
             IsEditing = true;
         }
 
+        // Metod för att spara receptet
+        // används i recipedetails
         private void Save()
         {
             //  Validering
@@ -122,6 +126,7 @@ namespace CookMaster.ViewModels
             _nav.NavigateTo<RecipeListView>(vm);
         }
 
+        // stoppar editing
         private void Cancel()
         {
             if (IsEditing) 
@@ -135,6 +140,7 @@ namespace CookMaster.ViewModels
 
         }
 
+        
         private void Copy()
         {
             var vm = new AddRecipeViewModel(_users, _nav, _recipes, SelectedRecipe); // skickar med template till AddRecipeViewModel

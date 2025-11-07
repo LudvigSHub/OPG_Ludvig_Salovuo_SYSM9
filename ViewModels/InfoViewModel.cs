@@ -10,6 +10,7 @@ using System.Windows.Input;
 
 namespace CookMaster.ViewModels
 {
+    // Egentligen bara ett Command för att öppna Info rutan
     public class InfoViewModel : ObservableObject
     {
         private readonly UserManager _users;

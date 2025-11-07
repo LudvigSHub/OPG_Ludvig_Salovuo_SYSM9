@@ -5,8 +5,10 @@ using CookMaster.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace CookMaster.ViewModels
@@ -24,10 +26,17 @@ namespace CookMaster.ViewModels
         public MainViewModel(UserManager users, NavigationService nav, RecipeManager recipes)
         {
             _users = users;
-            LoginCommand = new RelayCommand(_ => Login(), _ => CanLogin);
-            RegisterCommand = new RelayCommand(_ => OpenRegister());
             _nav = nav;
             _recipes = recipes;
+            LoginCommand = new RelayCommand(_ => Login(), _ => CanLogin);
+            RegisterCommand = new RelayCommand(_ => OpenRegister());
+            GetF2ACodeCommand = new RelayCommand(_ => Show2FAMessage(), _ => CanLogin);
+
+            OpenForgotPasswordCommand = new RelayCommand(_ => OpenForgotPassword());
+
+
+
+
         }
 
         // --- enkel login-skelett ---
@@ -52,6 +61,14 @@ namespace CookMaster.ViewModels
             set { _password = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanLogin)); }
         }
 
+        // Property för F2A-kod
+        private string? _f2aCode;
+        public string? F2ACode
+        {
+            get => _f2aCode;
+            set { _f2aCode = value; OnPropertyChanged(); }
+        }
+
         // Read-only property som talar om ifall login är möjligt.
         // Används av kommandots CanExecute (andra parametern till RelayCommand).
         // I XAML påverkar detta t.ex. IsEnabled på en knapp som binder till LoginCommand.
@@ -61,6 +78,9 @@ namespace CookMaster.ViewModels
         public ICommand LoginCommand { get; }
         // Kommandot för att öppna registreringsvyn
         public ICommand RegisterCommand { get; }
+
+        public ICommand GetF2ACodeCommand { get; }
+        public ICommand OpenForgotPasswordCommand { get; }
 
 
         private string _message = string.Empty;
@@ -83,23 +103,53 @@ namespace CookMaster.ViewModels
         // Om ja: navigera till RecipeListView.
         private void Login()
         {
-            if (_users.Login(Username, Password))
+            // Kolla användarnamn/lösenord
+            if (!_users.Login(Username, Password))
             {
-                Message = "Login OK";
-
-                         
-                var recipeVm = new RecipeListViewModel(_users, _nav, _recipes);     
-                _nav.NavigateTo<RecipeListView>(recipeVm);
-
-
-
-
+                MessageBox.Show("Wrong Username/Password.", "Login",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
-            else
+
+            // Kräver att användaren tryckt "Get F2A code" och fyllt i koden
+            if (string.IsNullOrWhiteSpace(F2ACode))
             {
-                Message = "Fel användarnamn/lösenord.";
+                MessageBox.Show("Press 'Get F2A code', fill in the code and press 'Log in' again.",
+                    "F2A krävs", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
             }
+
+            // 3) Jämför mot din AuthCode
+            if (F2ACode != AuthCode.ToString())
+            {
+                MessageBox.Show("Wrong F2A-Code. Try again!.", "F2A",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            // 4) Allt OK → in
+
+            MessageBox.Show("Login Successful!", "CookMaster",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+
+            var recipeVm = new RecipeListViewModel(_users, _nav, _recipes);
+            _nav.NavigateTo<RecipeListView>(recipeVm);
         }
+        // Den satta koden för Authenticator
+        int AuthCode = 133700;
+
+        // Visar F2A koden för användaren
+        private void Show2FAMessage()
+        {
+           MessageBox.Show($"Your code: {AuthCode}", "F2A Code", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
+
+        private void OpenForgotPassword()
+        {
+            var vm = new ForgotPasswordViewModel(_users, _nav, _recipes);
+            _nav.NavigateTo<ForgotPasswordView>(vm);
+        }
+
 
     }
 }

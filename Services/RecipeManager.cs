@@ -44,6 +44,13 @@ namespace CookMaster.Services
                     "Pinch of salt",
                     "Butter for cooking"
                 },
+                Instructions = "1. In a bowl, mix flour, sugar, baking powder, and salt.\n" +
+                               "2. In another bowl, whisk eggs and milk together.\n" +
+                               "3. Gradually add wet ingredients to dry ingredients, whisking until smooth.\n" +
+                               "4. Heat a non-stick pan over medium heat and melt a small amount of butter.\n" +
+                               "5. Pour a ladle of batter into the pan and cook until bubbles form on the surface.\n" +
+                               "6. Flip the pancake and cook until golden brown on both sides.\n" +
+                               "7. Repeat with remaining batter. Serve with your favorite toppings.\n",
                 Category = RecipeCategory.Dessert,
                 CreatedUtc = DateTime.UtcNow,
                 OwnerUsername = null // Globalt recept, alla skall kunna se det, så OwnerUsername är null
@@ -58,10 +65,24 @@ namespace CookMaster.Services
                     "50g Parmesan cheese",
                     "100g croutons",
                     "2 chicken breasts",
-                    "Caesar dressing",
+                    "Anjovies",
+                    "Garlic",
+                    "Olive oil",
+                    "Lemon juice",
+                    "Worcestershire sauce",
+                    "Dijon mustard",
+                    "Egg yolk",
                     "Salt",
                     "Pepper"
                 },
+                Instructions = "1. Grill or pan-fry the chicken breasts until fully cooked. Slice into strips.\n" +
+                               "2. Wash and chop the romaine lettuce.\n" +
+                               "3. In a large bowl, combine lettuce, croutons, and sliced chicken.\n" +
+                               "4. Put grated garlic, anjovies, lemon juice, egg yolk, dijon in a mixer-friendly bowl .\n" +
+                               "5. Mix with a stand mixer while pouring oliveoil slowly until emulsified, taste with salt and pepper .\n" +
+                               "6. mix the salad with the ceasardressing.\n" +
+                               "7. Top with shaved Parmesan cheese.\n" +
+                               "8. Serve immediately.\n",
                 Category = RecipeCategory.Salad,
                 CreatedUtc = DateTime.UtcNow,
                 OwnerUsername = null // Globalt recept, alla skall kunna se det, så OwnerUsername är null
@@ -136,6 +157,14 @@ namespace CookMaster.Services
                     "Salt",
                     "Pepper"
                 },
+                Instructions = "1. Heat the chicken broth in a pot and keep it warm.\n" +
+                               "2. In a separate pan, melt 1 tbsp of butter and sauté chopped onions until translucent.\n" +
+                               "3. Add Arborio rice and cook for 2 minutes, stirring constantly.\n" +
+                               "4. Pour in white wine and cook until it is mostly absorbed.\n" +
+                               "5. Begin adding warm chicken broth one ladle at a time, stirring frequently. Wait until the liquid is mostly absorbed before adding more broth.\n" +
+                               "6. Continue this process until the rice is creamy and cooked al dente (about 18-20 minutes).\n" +
+                               "7. Stir in remaining butter and grated Parmesan cheese. Season with salt and pepper to taste.\n" +
+                               "8. Serve immediately.\n",
                 Category = RecipeCategory.MainCourse,
                 CreatedUtc = DateTime.UtcNow,
                 OwnerUsername = user.Username

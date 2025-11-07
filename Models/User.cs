@@ -13,6 +13,9 @@ namespace CookMaster.Models
         public string Password { get; set; } = string.Empty;
         public string Country { get; set; } = string.Empty;
 
+        public string? SecurityQuestion { get; set; }
+        public string? SecurityAnswer { get; set; }
+
         public virtual bool IsAdmin { get; protected set; } = false;
 
 
