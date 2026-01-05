@@ -62,5 +62,91 @@ namespace CookMaster.Services
             command.ExecuteNonQuery();
 
         }
+
+        // Hämtar en användare från databasen baserat på användarnamn
+        public User? GetByUsername(string username)
+        {
+            using var connection = DbHelper.GetConnection();
+
+            using var command = connection.CreateCommand();
+
+
+            // Här används SELECT istället för INSERT
+            // för att hämta data från databasen
+            // filtrerar på username
+            command.CommandText = @"
+               SELECT
+                   Username,
+                   PasswordHash, 
+                   PasswordSalt, 
+                   Country, 
+                   SecurityQuestion, 
+                   SecurityAnswer, 
+                   IsAdmin
+                FROM Users
+                WHERE Username = $username;
+              ";
+
+            command.Parameters.AddWithValue("$username", username);
+
+            using var reader = command.ExecuteReader();
+
+            if (!reader.Read())
+                return null;
+
+            var isAdmin = reader.GetInt32(6) == 1;
+            User user = isAdmin ? new Admin() : new User();
+
+            user.Username = reader.GetString(0);
+            user.Password = reader.GetString(1); // I verklig app: hantera hash/salt
+            user.Country = reader.GetString(3);
+
+            user.SecurityQuestion = reader.IsDBNull(4) ? null : reader.GetString(4);
+            user.SecurityAnswer = reader.IsDBNull(5) ? null : reader.GetString(5);
+
+            return user;
+        }
+
+        public List<User> GetAll()
+        {
+            var result = new List<User>();
+
+            using var connection = DbHelper.GetConnection();
+            using var command = connection.CreateCommand();
+
+            command.CommandText = @"
+               SELECT
+                   Username,
+                   PasswordHash, 
+                   PasswordSalt, 
+                   Country, 
+                   SecurityQuestion, 
+                   SecurityAnswer, 
+                   IsAdmin
+                FROM Users
+                ORDER BY Username;
+              ";
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var isAdmin = reader.GetInt32(6) == 1;
+                User user = isAdmin ? new Admin() : new User();
+
+                user.Username = reader.GetString(0);
+
+                user.Password = reader.GetString(1); // I verklig app: hantera hash/salt
+
+                user.Country = reader.GetString(3);
+
+                user.SecurityQuestion = reader.IsDBNull(4) ? null : reader.GetString(4);
+                user.SecurityAnswer = reader.IsDBNull(5) ? null : reader.GetString(5);
+
+                result.Add(user);
+            }
+            return result;
+        }
+
     }
 }

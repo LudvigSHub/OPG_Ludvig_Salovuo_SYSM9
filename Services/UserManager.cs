@@ -1,5 +1,6 @@
 ﻿using CookMaster.Infrastructure;
 using CookMaster.Models;
+using CookMaster.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,7 +30,7 @@ namespace CookMaster.Services
             {
                 if (_currentUser == value) return;
                 _currentUser = value;
-                OnPropertyChanged();                    
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(IsAuthenticated));
             }
         }
@@ -43,16 +44,8 @@ namespace CookMaster.Services
         {
             Users = new ReadOnlyObservableCollection<User>(_users);
 
-            _users.Add(new Admin { Username = "admin", Password = "1234", Country = "Sweden",
-                SecurityQuestion = "Your favorite color?",
-                SecurityAnswer = "blue"
-            });
-
-
-            _users.Add(new User { Username = "user", Password = "1234", Country = "Sweden",
-                SecurityQuestion = "Your favorite color?",
-                SecurityAnswer = "blue"
-            });
+            EnsureDefaultUsers(); // skapar admin/user i db om de saknas
+            LoadUsersFromDb(); // fyller _users (så UI fungerar)
         }
 
         // Metod för att logga in en användare
@@ -72,7 +65,7 @@ namespace CookMaster.Services
 
 
         // Metod för att logga ut den aktuella användaren
-        
+
         public void Logout() => CurrentUser = null;
 
         // Metod för att registrera en ny användare.
@@ -89,7 +82,7 @@ namespace CookMaster.Services
                 error = "Password is required.";
                 return false;
             }
-            
+
 
             // Lösenordskrav: minst 8 tecken
             if (newUser?.Password.Length < 8)
@@ -117,9 +110,10 @@ namespace CookMaster.Services
             // Använder StringComparison.OrdinalIgnoreCase för att ignorera skillnad mellan stora och små bokstäver
             // exempel: "User" och "user" betraktas som samma användarnamn
             // Linq-metoden Any returnerar true om någon användare matchar villkoret
-            if (_users.Any(x => x.Username.Equals(newUser.Username, StringComparison.OrdinalIgnoreCase))) { 
+            if (_users.Any(x => x.Username.Equals(newUser.Username, StringComparison.OrdinalIgnoreCase)))
+            {
                 error = "Username already exists.";
-            return false;
+                return false;
             }
 
             // Lägg till den nya användaren i listan
@@ -165,7 +159,7 @@ namespace CookMaster.Services
             var pwChangeRequested = !string.IsNullOrEmpty(newPassword) || !string.IsNullOrEmpty(confirmPassword);
             if (pwChangeRequested)
             {
-                
+
                 // tecken, minst en siffra, minst ett specialtecken)
                 var pw = newPassword ?? string.Empty;
 
@@ -249,7 +243,52 @@ namespace CookMaster.Services
         // Hittar och returnerar en användare baserat på användarnamn
         public User? FindUser(string username) =>
             _users.FirstOrDefault(x => x.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+
+        private void EnsureDefaultUsers()
+        {
+            // admin
+            if (_repo.GetByUsername("admin") == null)
+            {
+                var admin = new Admin
+                {
+                    Username = "admin",
+                    Country = "Sweden",
+                    SecurityQuestion = "What is your favorite color?",
+                    SecurityAnswer = "Blue",
+                };
+
+                _repo.InsertUser(admin, "1234");
+
+            }
+            // user
+
+            if (_repo.GetByUsername("user") == null)
+            {
+                var user = new User
+                {
+                    Username = "user",
+                    Country = "Sweden",
+                    SecurityQuestion = "Your favorite color",
+                    SecurityAnswer = "Blue",
+                };
+
+                _repo.InsertUser(user, "1234");
+            }
+        }
+
+        private void LoadUsersFromDb()
+        {
+            _users.Clear();
+
+            foreach (var u in _repo.GetAll())
+                _users.Add(u);
+        }
+
+        
+
     }
+
+    
 }
 
 
