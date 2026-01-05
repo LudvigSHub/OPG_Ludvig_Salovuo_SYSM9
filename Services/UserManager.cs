@@ -19,6 +19,8 @@ namespace CookMaster.Services
         // Exponerar en ReadOnlyObservableCollection av users
         public ReadOnlyObservableCollection<User> Users { get; }
 
+        private readonly UserRepository _repo = new UserRepository();
+
         private User? _currentUser;
         public User? CurrentUser
         {

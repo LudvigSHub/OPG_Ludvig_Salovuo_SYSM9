@@ -2,6 +2,7 @@
 using CookMaster.Models;
 using CookMaster.Services;
 using CookMaster.ViewModels;
+using System.CodeDom;
 using System.Configuration;
 using System.Data;
 using System.Windows;
@@ -16,7 +17,10 @@ namespace CookMaster
         // OnStartup körs när applikationen startar.
         protected override void OnStartup(StartupEventArgs e)
         {
+            DbHelper.Initialize();
             base.OnStartup(e);
+
+            
 
 
             var navigation = new NavigationService();

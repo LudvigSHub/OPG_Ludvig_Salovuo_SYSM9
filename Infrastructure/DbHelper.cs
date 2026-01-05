@@ -19,7 +19,7 @@ namespace CookMaster.Infrastructure
         // anger datakällan och aktiverar foreign key-stöd
         // Denna säger typ "var ligger databasen och använd foreign keys"
         private static readonly string _connectionString =
-            $"Data Source= {_dbPath};Foreign Keys=True;";
+            $"Data Source={_dbPath};Foreign Keys=True;";
 
         // Metod för att skapa och öppna en SQLite-anslutning
         // Detta är "dörröppnaren" till databasen
@@ -41,7 +41,8 @@ namespace CookMaster.Infrastructure
             CREATE TABLE IF NOT EXISTS Users (
                 UserId INTEGER PRIMARY KEY AUTOINCREMENT,
                 Username TEXT NOT NULL UNIQUE,
-                Password TEXT NOT NULL,
+                PasswordHash TEXT NOT NULL,
+                PasswordSalt TEXT NOT NULL,
                 Country TEXT NOT NULL,
                 SecurityQuestion TEXT,
                 SecurityAnswer TEXT,
